@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-DELOG)
 set(CMAKE_CXX_FLAGS "-fpermissive -fPIC -lm")
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../simulation-2d-cpp/onnxruntime/include)
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../simulation-2d-cpp/onnxruntime/lib)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../onnxruntime/include)
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../onnxruntime/lib)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 

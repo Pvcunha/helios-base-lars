@@ -20,8 +20,8 @@ class OnnxTest : LearningModels::OnnxModel
     private:
         std::vector<float> createFrame()
         {
-            float frame[4] = {0};
-            return std::vector<float>(frame, frame + 4);
+            return std::vector<float>(3120, 0.0f);
+
         }
 };
 
