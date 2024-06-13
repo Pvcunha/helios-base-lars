@@ -6,6 +6,8 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
+option(USE_ONNX_LIB "USE_ONNX_LIB" ON)
+
 # compliler options
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -35,6 +37,12 @@ find_path(LIBRCSC_INCLUDE_DIR
 if(NOT LIBRCSC_INCLUDE_DIR)
   message(FATAL_ERROR "librcsc include dir not found!")
 endif()
+
+if(USE_ONNX_LIB)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime/include)
+  link_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime/lib)
+  add_definitions(-DONNX_ENABLED)
+endif(USE_ONNX_LIB)
 
 # remove variables from GUI
 mark_as_advanced(

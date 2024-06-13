@@ -119,6 +119,10 @@ target_include_directories(sample_player
     ${LIBRCSC_INCLUDE_DIR}
   )
 
+
+# echo if USE_ONNX_LIB is enabled
+message(STATUS "USE_ONNX_LIB: ${USE_ONNX_LIB}")
+
 target_link_libraries(sample_player
   PUBLIC
     ${LIBRCSC_LIB}
@@ -126,6 +130,13 @@ target_link_libraries(sample_player
     ZLIB::ZLIB
   PRIVATE
   )
+
+if(USE_ONNX_LIB)
+  target_link_libraries(sample_player
+    PRIVATE
+      onnxruntime
+  )
+endif(USE_ONNX_LIB)
 
 set_target_properties(sample_player
   PROPERTIES

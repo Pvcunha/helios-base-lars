@@ -288,6 +288,7 @@ Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
     // validate the pass
     //
     const CooperativeAction & pass = M_chain_graph.getFirstAction();
+    
 
     if ( pass.category() != CooperativeAction::Pass )
     {
@@ -297,6 +298,14 @@ Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
         return false;
     }
 
+    // TODO: trocar passe por um passe do modelo
+    /* 
+        1. Importar o modelo ONNX
+        2. Gerar um passe a partir do modelo
+        3. criar um objeto CooperativeAction a partir do dado gerado
+        4. substituir por pass
+    */
+   
     const AbstractPlayerObject * receiver = wm.ourPlayer( pass.targetPlayerUnum() );
 
     if ( ! receiver )
