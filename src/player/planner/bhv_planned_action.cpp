@@ -57,6 +57,8 @@
 #include <rcsc/common/server_param.h>
 #include <rcsc/common/logger.h>
 
+#include "data_extractor/DataExtractor.h"
+
 using namespace rcsc;
 
 namespace {
@@ -309,7 +311,8 @@ Bhv_PlannedAction::execute( PlayerAgent * agent )
             // 2. carregar o modelo onnx bps_model.onnx
             // 3. passar o X atual pro modelo
             // 4. printar o y de resposta
-            
+
+            std::vector<float> features = DataExtractor::i().get_last_features(agent, first_action, false); 
             dlog.addText( Logger::TEAM,
                           __FILE__" (Bhv_PlannedAction) pass" );
             Bhv_PassKickFindReceiver( M_chain_graph ).execute( agent );

@@ -159,6 +159,7 @@ SamplePlayer::~SamplePlayer()
 /*!
 
  */
+int SamplePlayer::player_port = 0;
 bool
 SamplePlayer::initImpl( CmdLineParser & cmd_parser )
 {
@@ -231,6 +232,7 @@ SamplePlayer::actionImpl()
     //
     // update strategy and analyzer
     //
+    SamplePlayer::player_port = this->config().port();
     Strategy::instance().update( world() );
     FieldAnalyzer::instance().update( world() );
 
