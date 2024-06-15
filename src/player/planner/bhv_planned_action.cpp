@@ -30,6 +30,8 @@
 
 #include "bhv_planned_action.h"
 
+#include "learning_models/bps_model.h"
+
 #include "action_chain_holder.h"
 #include "action_chain_graph.h"
 #include "action_state_pair.h"
