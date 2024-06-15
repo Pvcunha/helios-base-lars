@@ -90,7 +90,7 @@ public:
     //accessors
     static DataExtractor &i();
 
-    std::vector<float> get_last_features(const PlayerAgent *agent, const CooperativeAction &first_action, bool update_shoot);
+    std::vector<float> get_last_features(const rcsc::PlayerAgent *agent, const CooperativeAction &first_action, bool update_shoot);
 
     void extract_output(const rcsc::WorldModel &wm, int category, const rcsc::Vector2D &target, const int &unum,
                         const char *desc, double bell_speed);

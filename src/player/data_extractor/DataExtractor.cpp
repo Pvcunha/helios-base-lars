@@ -7,6 +7,7 @@
 #include <rcsc/player/world_model.h>
 #include <random>
 #include <time.h>
+#include <string> 
 
 #define cm ","
 #define ADD_ELEM(key, value) fout << (value) << cm
@@ -153,22 +154,26 @@ void DataExtractor::update_history(const rcsc::PlayerAgent *agent)
     }
 }
 
-std::vector<float> DataExtractor::get_last_features(const PlayerAgent *agent, const CooperativeAction &first_action, bool update_shoot)
+std::vector<float> DataExtractor::get_last_features(const rcsc::PlayerAgent *agent, const CooperativeAction &first_action, bool update_shoot)
 {
     static int last_update_cycle = -1;
     const WorldModel &wm = agent->world();
     if (last_update_cycle == wm.time().cycle())
-        return;
+        return std::vector<float>();
+
 
     if (!wm.self().isKickable())
-        return;
+        return std::vector<float>();
+
 
     if (wm.gameMode().type() != rcsc::GameMode::PlayOn)
-        return;
+        return std::vector<float>();
+
  
     last_update_cycle = wm.time().cycle();
     data.clear();
-    
+    this->last_features.clear();
+
     if (!update_shoot)
     {
         if (
@@ -176,12 +181,24 @@ std::vector<float> DataExtractor::get_last_features(const PlayerAgent *agent, co
             !first_action.targetPoint().isValid() ||
             first_action.targetPlayerUnum() > 11 ||
             first_action.targetPlayerUnum() < 1)
-            return;
+            return std::vector<float>();
     }
+
+    time_t rawtime;
+    struct tm *timeinfo;
+    char buffer[80];
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    char buffer2[80];
+    sprintf(buffer2, "%d%d%d%d%d", timeinfo->tm_year, timeinfo->tm_mon, timeinfo->tm_mday, timeinfo->tm_hour, timeinfo->tm_min);
+    std::string stime(buffer2);
+    timehash = stime;
 
     //timehash
     ADD_ELEM("timehash", timehash);
-    ADD_ELEM2(last_features, stof(timehash));
+    ADD_ELEM2(last_features, std::stof(timehash));
 
     // cycle
     ADD_ELEM("cycle", convertor_cycle(last_update_cycle));
@@ -212,7 +229,7 @@ std::vector<float> DataExtractor::get_last_features(const PlayerAgent *agent, co
     return this->last_features;
 }
 
-void DataExtractor::update(const PlayerAgent *agent, const ActionStatePair *first_layer, bool update_shoot)
+void DataExtractor::update(const rcsc::PlayerAgent *agent, const ActionStatePair *first_layer, bool update_shoot)
 {
     static int last_update_cycle = -1;
     const WorldModel &wm = agent->world();

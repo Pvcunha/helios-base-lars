@@ -1,6 +1,6 @@
 add_executable(sample_player
   learning_models/learning_models.cpp
-  data_extractor/offensive_data_extractor.cpp
+  data_extractor/DataExtractor.cpp
   basic_actions/basic_actions.cpp
   basic_actions/bhv_before_kick_off.cpp
   basic_actions/bhv_emergency.cpp

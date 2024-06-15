@@ -84,6 +84,8 @@
 #include <string>
 #include <cstdlib>
 
+#include "data_extractor/DataExtractor.h"
+
 using namespace rcsc;
 
 /*-------------------------------------------------------------------*/
@@ -242,6 +244,7 @@ SamplePlayer::actionImpl()
     M_field_evaluator = createFieldEvaluator();
     M_action_generator = createActionGenerator();
 
+    DataExtractor::i().update_history( this ); 
     ActionChainHolder::instance().setFieldEvaluator( M_field_evaluator );
     ActionChainHolder::instance().setActionGenerator( M_action_generator );
 

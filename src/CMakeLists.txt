@@ -42,3 +42,8 @@ file(COPY
   formations-dt formations-keeper formations-taker player.conf coach.conf start-debug.sh start-offline.sh
   DESTINATION ${PROJECT_BINARY_DIR}/bin
   )
+
+file(COPY
+  ${PROJECT_SOURCE_DIR}/models/bps_model.onnx
+  DESTINATION ${PROJECT_BINARY_DIR}/bin/models
+)

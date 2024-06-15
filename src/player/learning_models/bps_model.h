@@ -5,16 +5,14 @@ class BPSModel: LearningModels::OnnxModel
     public:
         BPSModel(const char *modelPath, Ort::Env *env, int numberofThreads) 
         : LearningModels::OnnxModel(modelPath, env){};
-        float getOuput(){
-            std::vector<float> frame = this->createFrame();
+        float getOuput(std::vector<float> &frame){
             float result = this->forward<float>(frame)[0];
             return result;
         };
 
-    private:
-        std::vector<float> createFrame()
-        {
-            return std::vector<float>(3120, 0.0f);
-
-        }
+        static BPSModel &i(){
+            Ort::Env* onnxEnv = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "test");
+            static BPSModel instance("models/bps_model.onnx", onnxEnv, 1);
+            return instance;
+        };
 };
