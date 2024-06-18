@@ -31,6 +31,51 @@ class OnnxModel
     ~OnnxModel();
 
   protected:
+    template <typename ONNXRETURNTYPE> ONNXRETURNTYPE *forward(std::vector<std::vector<float>> frame)
+    {
+        // Init the input tensor
+        std::vector<Ort::Value> input_tensors;
+        for(auto &f : frame){
+            size_t inputTensorSize = f.size();
+            auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+            Ort::Value input_tensor = Ort::Value::CreateTensor<float>(
+                memory_info, 
+                f.data(), 
+                inputTensorSize, 
+                this->inputNodeDims.data(), 
+                2
+            );
+            input_tensors.push_back(input_tensor);
+        }
+        // size_t inputTensorSize = frame.framesize();
+        // auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+        // Ort::Value input_tensor = Ort::Value::CreateTensor<float>(
+        //     memory_info, 
+        //     frame.data(), 
+        //     inputTensorSize, 
+        //     this->inputNodeDims.data(), 
+        //     2
+        // );
+
+        // Get our model output
+        std::vector<const char *> output_node_names;
+        for (int i = 0; i < this->session->GetOutputCount(); i++)
+        {
+            output_node_names.push_back(this->session->GetOutputName(i, allocator));
+        }
+
+        auto output_tensors = this->session->Run(
+            Ort::RunOptions().UnsetTerminate(), 
+            this->inputNodeNames.data(), 
+            input_tensors, 
+            input_tensors.size(), 
+            output_node_names.data(), 
+            1
+        );
+
+        ONNXRETURNTYPE *arr = output_tensors.front().GetTensorMutableData<ONNXRETURNTYPE>();
+        return arr;
+    }
     template <typename ONNXRETURNTYPE> ONNXRETURNTYPE *forward(std::vector<float> frame)
     {
         // Init the input tensor
@@ -54,7 +99,7 @@ class OnnxModel
         auto output_tensors = this->session->Run(
             Ort::RunOptions().UnsetTerminate(), 
             this->inputNodeNames.data(), 
-            &input_tensor, 
+            input_tensors, 
             1, 
             output_node_names.data(), 
             1
