@@ -58,7 +58,7 @@ class OnnxTest : LearningModels::OnnxModel
             const int framesize3 = 780;
             float frame3[framesize3] = {0};
             auto z = std::vector<float>(frame3, frame3 + framesize3);
-
+        
             return std::vector<std::vector<float>>{x, y, z};
         }
 };

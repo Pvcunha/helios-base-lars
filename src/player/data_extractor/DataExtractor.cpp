@@ -161,7 +161,6 @@ std::vector<float> DataExtractor::get_last_features(const rcsc::PlayerAgent *age
     if (last_update_cycle == wm.time().cycle())
         return std::vector<float>();
 
-
     if (!wm.self().isKickable())
         return std::vector<float>();
 
@@ -679,11 +678,11 @@ void DataExtractor::extract_ball(const rcsc::WorldModel &wm)
         if (DataExtractor::history_vel_count[0][len - 2 - i] == -1)
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_v_x', invalid_data);
+            ADD_ELEM('history_v_x', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_v_y', invalid_data);
+            ADD_ELEM('history_v_y', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_v_r', invalid_data);
+            ADD_ELEM('history_v_r', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
            ADD_ELEM('history_v_t', invalid_data);
         }

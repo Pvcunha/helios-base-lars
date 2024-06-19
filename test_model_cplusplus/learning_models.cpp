@@ -21,12 +21,7 @@ LearningModels::OnnxModel::OnnxModel(const char *modelPath, Ort::Env *env, int n
         Ort::TypeInfo typeInfo = session->GetInputTypeInfo(i);
         auto tensorInfo = typeInfo.GetTensorTypeAndShapeInfo();
         ONNXTensorElementDataType type = tensorInfo.GetElementType();
-        this->inputNodeDims = tensorInfo.GetShape();
-
-        for(auto x : tensorInfo.GetShape()){
-            std::cout << x << " ";
-        }
-        std::cout << std::endl;
+        this->inputNodeDims.push_back(tensorInfo.GetShape());
     }
 }
 

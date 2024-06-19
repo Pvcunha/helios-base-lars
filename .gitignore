@@ -6,4 +6,4 @@ start.sh
 train.sh
 build/
 .vscode
-
+librcsc/

@@ -34,18 +34,21 @@ class OnnxModel
     template <typename ONNXRETURNTYPE> ONNXRETURNTYPE *forward(std::vector<std::vector<float>> frame)
     {
         // Init the input tensor
-        std::vector<Ort::Value> input_tensors;
+ 
+        std::vector<Ort::Value> input_tensors;  
+        int count = 0; 
         for(auto &f : frame){
             size_t inputTensorSize = f.size();
             auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-            Ort::Value input_tensor = Ort::Value::CreateTensor<float>(
+
+            input_tensors.push_back(Ort::Value::CreateTensor<float>(
                 memory_info, 
                 f.data(), 
                 inputTensorSize, 
-                this->inputNodeDims.data(), 
+                this->inputNodeDims[count].data(), 
                 2
-            );
-            input_tensors.push_back(input_tensor);
+            ));
+            count++;
         }
         // size_t inputTensorSize = frame.framesize();
         // auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
@@ -64,55 +67,57 @@ class OnnxModel
             output_node_names.push_back(this->session->GetOutputName(i, allocator));
         }
 
-        auto output_tensors = this->session->Run(
+       auto output_tensors = this->session->Run(
             Ort::RunOptions().UnsetTerminate(), 
             this->inputNodeNames.data(), 
-            input_tensors, 
-            input_tensors.size(), 
+            input_tensors.data(), 
+            3, 
             output_node_names.data(), 
             1
         );
 
         ONNXRETURNTYPE *arr = output_tensors.front().GetTensorMutableData<ONNXRETURNTYPE>();
+
         return arr;
     }
-    template <typename ONNXRETURNTYPE> ONNXRETURNTYPE *forward(std::vector<float> frame)
-    {
-        // Init the input tensor
-        size_t inputTensorSize = frame.size();
-        auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-        Ort::Value input_tensor = Ort::Value::CreateTensor<float>(
-            memory_info, 
-            frame.data(), 
-            inputTensorSize, 
-            this->inputNodeDims.data(), 
-            2
-        );
 
-        // Get our model output
-        std::vector<const char *> output_node_names;
-        for (int i = 0; i < this->session->GetOutputCount(); i++)
-        {
-            output_node_names.push_back(this->session->GetOutputName(i, allocator));
-        }
+    // template <typename ONNXRETURNTYPE> ONNXRETURNTYPE *forward(std::vector<float> frame)
+    // {
+    //     // Init the input tensor
+    //     size_t inputTensorSize = frame.size();
+    //     auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+    //     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(
+    //         memory_info, 
+    //         frame.data(), 
+    //         inputTensorSize, 
+    //         this->inputNodeDims.data(), 
+    //         2
+    //     );
 
-        auto output_tensors = this->session->Run(
-            Ort::RunOptions().UnsetTerminate(), 
-            this->inputNodeNames.data(), 
-            input_tensors, 
-            1, 
-            output_node_names.data(), 
-            1
-        );
+    //     // Get our model output
+    //     std::vector<const char *> output_node_names;
+    //     for (int i = 0; i < this->session->GetOutputCount(); i++)
+    //     {
+    //         output_node_names.push_back(this->session->GetOutputName(i, allocator));
+    //     }
 
-        ONNXRETURNTYPE *arr = output_tensors.front().GetTensorMutableData<ONNXRETURNTYPE>();
-        return arr;
-    }
+    //     auto output_tensors = this->session->Run(
+    //         Ort::RunOptions().UnsetTerminate(), 
+    //         this->inputNodeNames.data(), 
+    //         input_tensors, 
+    //         1, 
+    //         output_node_names.data(), 
+    //         1
+    //     );
+
+    //     ONNXRETURNTYPE *arr = output_tensors.front().GetTensorMutableData<ONNXRETURNTYPE>();
+    //     return arr;
+    // }
 
     Ort::Session* session;
     Ort::Env* env;
     size_t numInputNodes;
-    std::vector<int64_t> inputNodeDims;
+    std::vector<std::vector<int64_t>> inputNodeDims;
     Ort::AllocatorWithDefaultOptions allocator;
     std::vector<char*> inputNodeNames;
 };
