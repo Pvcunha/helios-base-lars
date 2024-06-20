@@ -30,6 +30,11 @@
 
 #include "hold_ball.h"
 
+#include "data_extractor/data_utils.h"
+#include "data_extractor/DataExtractor.h"
+#include "data_extractor/data_writer.h"
+
+
 #include <rcsc/player/player_agent.h>
 #include <rcsc/common/server_param.h>
 #include <rcsc/common/logger.h>
@@ -824,4 +829,66 @@ ActionChainGraph::write_chain_log( const std::string & pre_log_message,
             }
         }
     }
+}
+
+/*-------------------------------------------------------------------*/
+
+void ActionChainGraph::writeChainDataframe( const rcsc::WorldModel &world, 
+                                            const int count, 
+                                            const Series &series, 
+                                            const double &eval, 
+                                            const double &dangerEval )
+{
+    
+    
+    const PredictState currentState(world);
+
+    for (size_t i = 0; i < series.size(); ++i)
+    {
+        std::string dataRow;
+        std::vector<float> dataRowVector = {0};
+        dataRow += str(world.time().cycle()) + "," + str(world.self().unum()) + "," + str(count) + "," + str(eval) + "," + str(dangerEval);
+        // dataRowVector.push_back(world.time().cycle());
+        // dataRowVector.push_back(world.self().unum());
+        // dataRowVector.push_back(count);
+        // dataRowVector.push_back(eval);
+        // dataRowVector.push_back(dangerEval);
+
+        const CooperativeAction &a = series[i].action();
+        const PredictState *s0;
+        const PredictState *s1;
+
+        if (i == 0)
+        {
+            s0 = &currentState;
+            s1 = &(series[0].state());
+        }
+        else
+        {
+            s0 = &(series[i - 1].state());
+            s1 = &(series[i].state());
+        }
+
+        switch (a.category())
+        {
+
+        case CooperativeAction::Pass: {
+            dataRow += ",pass," + std::to_string(i) + "," + std::to_string(s1->spendTime()) + "," + std::to_string(a.targetPoint().x) + "," + std::to_string(a.targetPoint().y) + "," + std::to_string(a.targetPlayerUnum());
+            // dataRowVector.push_back(i);
+            // dataRowVector.push_back(s1->spendTime());
+            // dataRowVector.push_back(a.targetPoint().x);
+            // dataRowVector.push_back(a.targetPoint().y);
+            // dataRowVector.push_back(a.targetPlayerUnum());
+            dataRow += "," + std::to_string(currentState.ballHolderUnum()) + "," + std::to_string(currentState.ballHolder()->pos().x) + "," + std::to_string(currentState.ballHolder()->pos().y);
+            DataWriter::instance().writeLineAction(world, dataRow);
+            std::string worldLog = LogWorldModel(world);
+            DataWriter::instance().writeLineWorldModel(world, worldLog);
+            break;
+        }
+
+        }
+        // fout << dataRow;
+    }
+
+    // fout.close();
 }

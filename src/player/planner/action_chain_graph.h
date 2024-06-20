@@ -55,6 +55,8 @@ public:
 
     typedef std::shared_ptr< ActionChainGraph > Ptr; //!< pointer type alias
     typedef std::shared_ptr< const ActionChainGraph > ConstPtr; //!< const pointer type alias
+    typedef std::vector<ActionStatePair> Series;
+    typedef std::pair<Series, double> EvaluatedSeries;
 
 public:
     static const size_t DEFAULT_MAX_CHAIN_LENGTH;
@@ -149,6 +151,12 @@ public:
                           const int count,
                           const std::vector< ActionStatePair > & path,
                           const double & eval );
+    static
+    void writeChainDataframe( const rcsc::WorldModel &world, 
+                                                const int count, 
+                                                const Series &series, 
+                                                const double &eval, 
+                                                const double &dangerEval );
 };
 
 #endif
