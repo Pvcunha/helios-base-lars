@@ -261,6 +261,46 @@ IntentionPassKickFindReceiver::execute( PlayerAgent * agent )
     return true;
 }
 
+double
+s_get_ball_speed_for_pass( const double & distance )
+{
+    if ( distance >= 20.0 )
+    {
+        //return 3.0;
+        return 2.5;
+    }
+    else if ( distance >= 8.0 )
+    {
+        //return 2.5;
+        return 2.0;
+    }
+    else if ( distance >= 5.0 )
+    {
+        return 1.8;
+    }
+    else
+    {
+        return 1.5;
+    }
+}
+
+int get_target_unum( Vector2D target_point, const WorldModel & wm )
+{
+    double closest_dist = 1000.0;
+    int closest_unum = Unum_Unknown;
+    for( auto teammate : wm.teammates() ) {
+        if ( teammate->unum() == wm.self().unum() ) {
+            continue;
+        }
+        double dist = teammate->pos().dist( target_point );
+        if ( dist < closest_dist ) {
+            closest_dist = dist;
+            closest_unum = teammate->unum();
+        }
+    }
+    
+    return closest_unum;
+}
 
 
 /*-------------------------------------------------------------------*/
@@ -392,17 +432,30 @@ Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
     //
     // pass kick
     //
+    auto state = M_chain_graph.getFirstState();
+    const AbstractPlayerObject *holder = state.ballHolder();
+
+    std::cout << "Infering target point..." << std::endl;
     std::vector<float> infered_target_point = LearningModels::TargetPointGenerator::instance().getOuput();
+    Vector2D inf_target_point = Vector2D(infered_target_point[0], infered_target_point[1]);
+    std::cout << "Successifully infered target point" << std::endl;
+    const int kick_stepp = 2; 
+
+    const double dist = ( inf_target_point - holder->pos() ).r();
+
+    const double ball_speed = s_get_ball_speed_for_pass( dist );
+    const unsigned int spend_time = calc_length_geom_series( pass.firstBallSpeed(), dist, ServerParam::i().ballDecay()) + kick_step;
+    const unsigned int target_unum = get_target_unum(inf_target_point, wm);
     
     CooperativeAction::Ptr new_pass(
         new Pass(
-            pass.playerUnum(),
-            pass.targetPlayerUnum(), 
-            Vector2D(infered_target_point[0], infered_target_point[1]),
-            1.0,
-            pass.durationStep(),
-            pass.kickCount(),
-            pass.isFinalAction(),
+            holder->unum(),
+            target_unum,
+            inf_target_point,
+            ball_speed,
+            spend_time,
+            kick_stepp,
+            false, 
             "pass"
         )
     );

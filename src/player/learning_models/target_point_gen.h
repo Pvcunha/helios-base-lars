@@ -27,7 +27,7 @@ namespace LearningModels
         };
         
         static TargetPointGenerator &instance() {
-            static TargetPointGenerator instance("models/bps_model.onnx", new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "test"), 1, 167, 138, 780);
+            static TargetPointGenerator instance("models/tpg_fset1.onnx", new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "test"), 1, 167, 138, 780);
             return instance;
         }
 
