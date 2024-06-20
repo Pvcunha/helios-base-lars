@@ -41,6 +41,9 @@
 
 #include "neck_turn_to_receiver.h"
 
+#include "learning_models/target_point_gen.h"
+#include "pass.h"
+
 #include "basic_actions/bhv_scan_field.h"
 #include "basic_actions/body_hold_ball.h"
 #include "basic_actions/body_kick_one_step.h"
@@ -305,7 +308,8 @@ Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
         3. criar um objeto CooperativeAction a partir do dado gerado
         4. substituir por pass
     */
-   
+
+     
     const AbstractPlayerObject * receiver = wm.ourPlayer( pass.targetPlayerUnum() );
 
     if ( ! receiver )
@@ -388,8 +392,22 @@ Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
     //
     // pass kick
     //
+    std::vector<float> infered_target_point = LearningModels::TargetPointGenerator::instance().getOuput();
+    
+    CooperativeAction::Ptr new_pass(
+        new Pass(
+            pass.playerUnum(),
+            pass.targetPlayerUnum(), 
+            Vector2D(infered_target_point[0], infered_target_point[1]),
+            1.0,
+            pass.durationStep(),
+            pass.kickCount(),
+            pass.isFinalAction(),
+            "pass"
+        )
+    );
 
-    doPassKick( agent, pass );
+    doPassKick( agent, *new_pass);
 
     return true;
 }

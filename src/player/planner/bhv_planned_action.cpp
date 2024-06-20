@@ -30,8 +30,6 @@
 
 #include "bhv_planned_action.h"
 
-#include "learning_models/bps_model.h"
-
 #include "action_chain_holder.h"
 #include "action_chain_graph.h"
 #include "action_state_pair.h"
@@ -315,8 +313,6 @@ Bhv_PlannedAction::execute( PlayerAgent * agent )
             features.pop_back();
             features.pop_back();
 
-            float yhat = BPSModel::i().getOuput(features);
-            std::cout << "Features: " << features.size() << " yhat: " << yhat << std::endl;
             dlog.addText( Logger::TEAM,
                           __FILE__" (Bhv_PlannedAction) pass" );
             Bhv_PassKickFindReceiver( M_chain_graph ).execute( agent );
