@@ -44,6 +44,6 @@ file(COPY
   )
 
 file(COPY
-  ${PROJECT_SOURCE_DIR}/models/bps_model.onnx ${PROJECT_SOURCE_DIR}/models/tpg_fset1.onnx
+  ${PROJECT_SOURCE_DIR}/models/bps_model.onnx ${PROJECT_SOURCE_DIR}/models/tpg_fset1.onnx ${PROJECT_SOURCE_DIR}/models/tpg_positional.onnx
   DESTINATION ${PROJECT_BINARY_DIR}/bin/models
 )
