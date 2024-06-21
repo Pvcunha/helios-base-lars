@@ -7,7 +7,7 @@
 #include <rcsc/player/world_model.h>
 #include <random>
 #include <time.h>
-#include <string> 
+#include <string>
 
 #define cm ","
 #define ADD_ELEM(key, value) fout << (value) << cm
@@ -164,11 +164,9 @@ std::vector<float> DataExtractor::get_last_features(const rcsc::PlayerAgent *age
     if (!wm.self().isKickable())
         return std::vector<float>();
 
-
     if (wm.gameMode().type() != rcsc::GameMode::PlayOn)
         return std::vector<float>();
 
- 
     last_update_cycle = wm.time().cycle();
     data.clear();
     this->last_features.clear();
@@ -195,14 +193,13 @@ std::vector<float> DataExtractor::get_last_features(const rcsc::PlayerAgent *age
     std::string stime(buffer2);
     timehash = stime;
 
-    //timehash
+    // timehash
     ADD_ELEM("timehash", timehash);
     ADD_ELEM2(last_features, std::stof(timehash));
 
     // cycle
     ADD_ELEM("cycle", convertor_cycle(last_update_cycle));
     ADD_ELEM2(last_features, convertor_cycle(last_update_cycle));
-
 
     // ball
     extract_ball(wm);
@@ -259,9 +256,9 @@ void DataExtractor::update(const rcsc::PlayerAgent *agent, const ActionStatePair
             return;
     }
 
-    //timehash
+    // timehash
     ADD_ELEM("timehash", timehash);
-    
+
     // cycle
     ADD_ELEM("cycle", convertor_cycle(last_update_cycle));
 
@@ -285,7 +282,6 @@ void DataExtractor::update(const rcsc::PlayerAgent *agent, const ActionStatePair
                        ((CooperativeAction &)first_layer->action()).firstBallSpeed());
         fout << std::endl;
     }
-
 }
 
 DataExtractor &DataExtractor::i()
@@ -608,47 +604,47 @@ void DataExtractor::extract_ball(const rcsc::WorldModel &wm)
         ADD_ELEM("kicker_r", convertor_dist(wm.ball().rpos().r()));
         ADD_ELEM2(last_features, convertor_angle(wm.ball().rpos().th().degree()));
         ADD_ELEM("kicker_t", convertor_angle(wm.ball().rpos().th().degree()));
-        }
+    }
     else
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("p_x", invalid_data);
+        ADD_ELEM("p_x", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("p_y", invalid_data);
+        ADD_ELEM("p_y", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("p_r", invalid_data);
+        ADD_ELEM("p_r", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("p_t", invalid_data);
+        ADD_ELEM("p_t", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("kicker_x", invalid_data);
+        ADD_ELEM("kicker_x", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("kicker_y", invalid_data);
+        ADD_ELEM("kicker_y", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("kicker_r", invalid_data);
+        ADD_ELEM("kicker_r", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("kicker_t", invalid_data);
+        ADD_ELEM("kicker_t", invalid_data);
     }
     if (wm.ball().velValid())
     {
         ADD_ELEM2(last_features, convertor_bvx(wm.ball().vel().x));
-       ADD_ELEM("v_x", convertor_bvx(wm.ball().vel().x));
+        ADD_ELEM("v_x", convertor_bvx(wm.ball().vel().x));
         ADD_ELEM2(last_features, convertor_bvy(wm.ball().vel().y));
-       ADD_ELEM("v_y", convertor_bvy(wm.ball().vel().y));
+        ADD_ELEM("v_y", convertor_bvy(wm.ball().vel().y));
         ADD_ELEM2(last_features, convertor_bv(wm.ball().vel().r()));
-       ADD_ELEM("v_r", convertor_bv(wm.ball().vel().r()));
+        ADD_ELEM("v_r", convertor_bv(wm.ball().vel().r()));
         ADD_ELEM2(last_features, convertor_angle(wm.ball().vel().th().degree()));
-       ADD_ELEM("v_t", convertor_angle(wm.ball().vel().th().degree()));
+        ADD_ELEM("v_t", convertor_angle(wm.ball().vel().th().degree()));
     }
     else
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("v_x", invalid_data);
+        ADD_ELEM("v_x", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("v_y", invalid_data);
+        ADD_ELEM("v_y", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("v_r", invalid_data);
+        ADD_ELEM("v_r", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("v_t", invalid_data);
+        ADD_ELEM("v_t", invalid_data);
     }
     int len = DataExtractor::history_pos_count[0].size();
     for (int i = 0; i < option.history_size; i++)
@@ -656,24 +652,24 @@ void DataExtractor::extract_ball(const rcsc::WorldModel &wm)
         if (DataExtractor::history_pos_count[0][len - 2 - i] == -1)
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_p_x', invalid_data);
+            ADD_ELEM('history_p_x', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_p_y', invalid_data);
+            ADD_ELEM('history_p_y', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_p_r', invalid_data);
+            ADD_ELEM('history_p_r', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_p_t', invalid_data);
+            ADD_ELEM('history_p_t', invalid_data);
         }
         else
         {
             ADD_ELEM2(last_features, convertor_x(DataExtractor::history_pos[0][len - 2 - i].x));
-           ADD_ELEM('history_p_x', convertor_x(DataExtractor::history_pos[0][len - 2 - i].x));
+            ADD_ELEM('history_p_x', convertor_x(DataExtractor::history_pos[0][len - 2 - i].x));
             ADD_ELEM2(last_features, convertor_y(DataExtractor::history_pos[0][len - 2 - i].y));
-           ADD_ELEM('history_p_y', convertor_y(DataExtractor::history_pos[0][len - 2 - i].y));
+            ADD_ELEM('history_p_y', convertor_y(DataExtractor::history_pos[0][len - 2 - i].y));
             ADD_ELEM2(last_features, convertor_dist(DataExtractor::history_pos[0][len - 2 - i].r()));
-           ADD_ELEM('history_p_r', convertor_dist(DataExtractor::history_pos[0][len - 2 - i].r()));
+            ADD_ELEM('history_p_r', convertor_dist(DataExtractor::history_pos[0][len - 2 - i].r()));
             ADD_ELEM2(last_features, convertor_angle(DataExtractor::history_pos[0][len - 2 - i].th().degree()));
-           ADD_ELEM('history_p_t', convertor_angle(DataExtractor::history_pos[0][len - 2 - i].th().degree()));
+            ADD_ELEM('history_p_t', convertor_angle(DataExtractor::history_pos[0][len - 2 - i].th().degree()));
         }
         if (DataExtractor::history_vel_count[0][len - 2 - i] == -1)
         {
@@ -684,22 +680,22 @@ void DataExtractor::extract_ball(const rcsc::WorldModel &wm)
             ADD_ELEM2(last_features, invalid_data);
             ADD_ELEM('history_v_r', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_v_t', invalid_data);
+            ADD_ELEM('history_v_t', invalid_data);
         }
         else
         {
             ADD_ELEM2(last_features, convertor_bvx(DataExtractor::history_vel[0][len - 2 - i].x));
-           ADD_ELEM('history_v_x', convertor_bvx(DataExtractor::history_vel[0][len - 2 - i].x));
+            ADD_ELEM('history_v_x', convertor_bvx(DataExtractor::history_vel[0][len - 2 - i].x));
             ADD_ELEM2(last_features, convertor_bvy(DataExtractor::history_vel[0][len - 2 - i].y));
-           ADD_ELEM('history_v_y', convertor_bvy(DataExtractor::history_vel[0][len - 2 - i].y));
+            ADD_ELEM('history_v_y', convertor_bvy(DataExtractor::history_vel[0][len - 2 - i].y));
             ADD_ELEM2(last_features, convertor_bv(DataExtractor::history_vel[0][len - 2 - i].r()));
-           ADD_ELEM('history_v_r', convertor_bv(DataExtractor::history_vel[0][len - 2 - i].r()));
+            ADD_ELEM('history_v_r', convertor_bv(DataExtractor::history_vel[0][len - 2 - i].r()));
             ADD_ELEM2(last_features, convertor_angle(DataExtractor::history_vel[0][len - 2 - i].th().degree()));
-           ADD_ELEM('history_v_t', convertor_angle(DataExtractor::history_vel[0][len - 2 - i].th().degree()));
+            ADD_ELEM('history_v_t', convertor_angle(DataExtractor::history_vel[0][len - 2 - i].th().degree()));
         }
     }
     ADD_ELEM2(last_features, wm.offsideLineCount());
-   ADD_ELEM("offside_count", wm.offsideLineCount());
+    ADD_ELEM("offside_count", wm.offsideLineCount());
 }
 
 void DataExtractor::extract_kicker(const rcsc::WorldModel &wm)
@@ -731,11 +727,12 @@ void DataExtractor::extract_players(const rcsc::WorldModel &wm)
             if (player->unum() == wm.self().unum())
             {
                 ADD_ELEM2(last_features, 1);
-               ADD_ELEM("is_kicker", 1);
+                ADD_ELEM("is_kicker", 1);
             }
-            else {
+            else
+            {
                 ADD_ELEM2(last_features, 0);
-               ADD_ELEM("is_kicker", 0);
+                ADD_ELEM("is_kicker", 0);
             }
         }
 
@@ -849,11 +846,13 @@ DataExtractor::sort_players(const rcsc::WorldModel &wm)
 
 void DataExtractor::add_null_player(int unum, DataSide side)
 {
-    if (option.side == side || option.side == BOTH) {
-        ADD_ELEM2(last_features, side == OPP ? -1 : 1); 
-        ADD_ELEM("side", side == OPP ? -1 : 1); 
+    if (option.side == side || option.side == BOTH)
+    {
+        ADD_ELEM2(last_features, side == OPP ? -1 : 1);
+        ADD_ELEM("side", side == OPP ? -1 : 1);
     }
-    if (option.unum == side || option.unum == BOTH) {
+    if (option.unum == side || option.unum == BOTH)
+    {
         ADD_ELEM2(last_features, convertor_unum(unum));
         ADD_ELEM("unum", convertor_unum(unum));
     }
@@ -864,143 +863,150 @@ void DataExtractor::add_null_player(int unum, DataSide side)
         ADD_ELEM2(last_features, invalid_data);
         ADD_ELEM("player_type_effort_max", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("player_type_effort_min", invalid_data);
+        ADD_ELEM("player_type_effort_min", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("player_type_kickable", invalid_data);
+        ADD_ELEM("player_type_kickable", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("player_type_margin", invalid_data);
+        ADD_ELEM("player_type_margin", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("player_type_kick_power", invalid_data);
+        ADD_ELEM("player_type_kick_power", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("player_type_decay", invalid_data);
+        ADD_ELEM("player_type_decay", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("player_type_size", invalid_data);
+        ADD_ELEM("player_type_size", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("player_type_speed_max", invalid_data);
+        ADD_ELEM("player_type_speed_max", invalid_data);
     }
-    if (option.body == side || option.body == BOTH){
+    if (option.body == side || option.body == BOTH)
+    {
         ADD_ELEM2(last_features, invalid_data);
-    ADD_ELEM("body", invalid_data);
+        ADD_ELEM("body", invalid_data);
     }
-    if (option.face == side || option.face == BOTH) {
+    if (option.face == side || option.face == BOTH)
+    {
         ADD_ELEM2(last_features, invalid_data);
-   ADD_ELEM("face", invalid_data);
+        ADD_ELEM("face", invalid_data);
     }
-    if (option.tackling == side || option.tackling == BOTH) {
+    if (option.tackling == side || option.tackling == BOTH)
+    {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("tackling", invalid_data);
-    } 
-    if (option.kicking == side || option.kicking == BOTH) {
-        ADD_ELEM2(last_features, invalid_data);
-    ADD_ELEM("kicking", invalid_data);
+        ADD_ELEM("tackling", invalid_data);
     }
-    if (option.card == side || option.card == BOTH) {
+    if (option.kicking == side || option.kicking == BOTH)
+    {
+        ADD_ELEM2(last_features, invalid_data);
+        ADD_ELEM("kicking", invalid_data);
+    }
+    if (option.card == side || option.card == BOTH)
+    {
         ADD_ELEM("card", invalid_data);
     }
     if (option.pos == side || option.pos == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pos_x", invalid_data);
+        ADD_ELEM("pos_x", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pos_y", invalid_data);
+        ADD_ELEM("pos_y", invalid_data);
     }
     if (option.polarPos == side || option.polarPos == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pos_r", invalid_data);
+        ADD_ELEM("pos_r", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pos_t", invalid_data);
+        ADD_ELEM("pos_t", invalid_data);
     }
     if (option.relativePos == side || option.relativePos == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("kicker_x", invalid_data);
+        ADD_ELEM("kicker_x", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("kicker_y", invalid_data);
+        ADD_ELEM("kicker_y", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("kicker_r", invalid_data);
+        ADD_ELEM("kicker_r", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("kicker_t", invalid_data);
+        ADD_ELEM("kicker_t", invalid_data);
     }
     if (option.in_offside == side || option.in_offside == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("in_offside", invalid_data);
+        ADD_ELEM("in_offside", invalid_data);
     }
     if (option.vel == side || option.vel == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("v_x", invalid_data);
+        ADD_ELEM("v_x", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("v_y", invalid_data);
+        ADD_ELEM("v_y", invalid_data);
     }
     if (option.polarVel == side || option.polarVel == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("v_r", invalid_data);
+        ADD_ELEM("v_r", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("v_t", invalid_data);
+        ADD_ELEM("v_t", invalid_data);
     }
     if (option.counts == side || option.counts == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pos_count", invalid_data);
+        ADD_ELEM("pos_count", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("vel_count", invalid_data);
+        ADD_ELEM("vel_count", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("body_count", invalid_data);
+        ADD_ELEM("body_count", invalid_data);
     }
-    if (option.isKicker == side || option.isKicker == BOTH) {
+    if (option.isKicker == side || option.isKicker == BOTH)
+    {
         ADD_ELEM2(last_features, invalid_data);
         ADD_ELEM("is_kicker", invalid_data);
     }
     if (option.openAnglePass == side || option.openAnglePass == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_dist", invalid_data);
+        ADD_ELEM("pass_dist", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp1_dist", invalid_data);
+        ADD_ELEM("pass_opp1_dist", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp1_angle", invalid_data);
+        ADD_ELEM("pass_opp1_angle", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp1_dist_line", invalid_data);
+        ADD_ELEM("pass_opp1_dist_line", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp1_dist_proj", invalid_data);
+        ADD_ELEM("pass_opp1_dist_proj", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp1_dist_diffbody", invalid_data);
+        ADD_ELEM("pass_opp1_dist_diffbody", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp2_dist", invalid_data);
+        ADD_ELEM("pass_opp2_dist", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp2_angle", invalid_data);
+        ADD_ELEM("pass_opp2_angle", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp2_dist_line", invalid_data);
+        ADD_ELEM("pass_opp2_dist_line", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("pass_opp2_dist_proj", invalid_data);
+        ADD_ELEM("pass_opp2_dist_proj", invalid_data);
         ADD_ELEM("pass_opp2_dist_diffbody", invalid_data);
     }
     if (option.nearestOppDist == side || option.nearestOppDist == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("opp1_dist", invalid_data);
+        ADD_ELEM("opp1_dist", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("opp1_angle", invalid_data);
+        ADD_ELEM("opp1_angle", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("opp1_diffbody", invalid_data);
+        ADD_ELEM("opp1_diffbody", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("opp2_dist", invalid_data);
+        ADD_ELEM("opp2_dist", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("opp2_angle", invalid_data);
+        ADD_ELEM("opp2_angle", invalid_data);
         ADD_ELEM("opp2_diffbody", invalid_data);
     }
 
     if (option.polarGoalCenter == side || option.polarGoalCenter == BOTH)
     {
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("angle_goal_center_r", invalid_data);
+        ADD_ELEM("angle_goal_center_r", invalid_data);
         ADD_ELEM2(last_features, invalid_data);
-       ADD_ELEM("angle_goal_center_t", invalid_data);
+        ADD_ELEM("angle_goal_center_t", invalid_data);
     }
-    if (option.openAngleGoal == side || option.openAngleGoal == BOTH){
+    if (option.openAngleGoal == side || option.openAngleGoal == BOTH)
+    {
         ADD_ELEM("open_goal_angle", invalid_data);
     }
     for (int i = 0; i < option.history_size; i++)
@@ -1008,45 +1014,45 @@ void DataExtractor::add_null_player(int unum, DataSide side)
         if (option.body == side || option.body == BOTH)
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_body', invalid_data);
+            ADD_ELEM('history_body', invalid_data);
         }
         if (option.pos == side || option.pos == BOTH)
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_pos_x', invalid_data);
+            ADD_ELEM('history_pos_x', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_pos_y', invalid_data);
+            ADD_ELEM('history_pos_y', invalid_data);
         }
         if (option.polarPos == side || option.polarPos == BOTH)
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_pos_r', invalid_data);
+            ADD_ELEM('history_pos_r', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_pos_t', invalid_data);
+            ADD_ELEM('history_pos_t', invalid_data);
         }
 
         if (option.vel == side || option.vel == BOTH)
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_vel_x', invalid_data);
+            ADD_ELEM('history_vel_x', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_vel_y', invalid_data);
+            ADD_ELEM('history_vel_y', invalid_data);
         }
         if (option.polarVel == side || option.polarVel == BOTH)
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_vel_r', invalid_data);
+            ADD_ELEM('history_vel_r', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_vel_t', invalid_data);
+            ADD_ELEM('history_vel_t', invalid_data);
         }
         if (option.counts == side || option.counts == BOTH)
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_pos_count', invalid_data);
+            ADD_ELEM('history_pos_count', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_vel_count', invalid_data);
+            ADD_ELEM('history_vel_count', invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM('history_body_count', invalid_data);
+            ADD_ELEM('history_body_count', invalid_data);
         }
     }
 }
@@ -1059,46 +1065,46 @@ void DataExtractor::extract_output(const rcsc::WorldModel &wm,
                                    double ball_speed)
 {
     ADD_ELEM2(last_features, category);
-   ADD_ELEM("category", category);
-    ADD_ELEM2(last_features, convertor_x(target.x));
-   ADD_ELEM("target_x", convertor_x(target.x));
+    ADD_ELEM("category", category);
+    // ADD_ELEM2(last_features, convertor_x(target.x));
+    ADD_ELEM("target_x", convertor_x(target.x));
     ADD_ELEM2(last_features, convertor_y(target.y));
-   ADD_ELEM("target_y", convertor_y(target.y));
+    // ADD_ELEM("target_y", convertor_y(target.y));
     ADD_ELEM2(last_features, unum);
-   ADD_ELEM("unum", unum);
+    ADD_ELEM("unum", unum);
     ADD_ELEM2(last_features, find_unum_index(wm, unum));
-   ADD_ELEM("unum_index", find_unum_index(wm, unum));
+    ADD_ELEM("unum_index", find_unum_index(wm, unum));
     ADD_ELEM2(last_features, convertor_bv(ball_speed));
-   ADD_ELEM("ball_speed", convertor_bv(ball_speed));
+    ADD_ELEM("ball_speed", convertor_bv(ball_speed));
     ADD_ELEM2(last_features, convertor_angle((target - wm.ball().pos()).th().degree()));
-   ADD_ELEM("ball_dir", convertor_angle((target - wm.ball().pos()).th().degree()));
+    ADD_ELEM("ball_dir", convertor_angle((target - wm.ball().pos()).th().degree()));
     if (category == 2)
     {
         if (std::string(desc) == "strictDirect")
         {
             ADD_ELEM2(last_features, 0);
-           ADD_ELEM("desc", 0);
+            ADD_ELEM("desc", 0);
         }
         else if (std::string(desc) == "strictLead")
         {
             ADD_ELEM2(last_features, 1);
-           ADD_ELEM("desc", 1);
+            ADD_ELEM("desc", 1);
         }
         else if (std::string(desc) == "strictThrough")
         {
             ADD_ELEM2(last_features, 2);
-           ADD_ELEM("desc", 2);
+            ADD_ELEM("desc", 2);
         }
         else if (std::string(desc) == "cross")
         {
             ADD_ELEM2(last_features, 3);
-           ADD_ELEM("desc", 3);
+            ADD_ELEM("desc", 3);
         }
     }
     else
     {
         ADD_ELEM2(last_features, 4);
-       ADD_ELEM("desc", 4);
+        ADD_ELEM("desc", 4);
     }
 }
 void DataExtractor::update_for_shoot(const rcsc::PlayerAgent *agent, rcsc::Vector2D target, double ballsp)
@@ -1106,21 +1112,21 @@ void DataExtractor::update_for_shoot(const rcsc::PlayerAgent *agent, rcsc::Vecto
     update(agent, NULL, true);
     const WorldModel &wm = agent->world();
     ADD_ELEM2(last_features, 3);
-   ADD_ELEM("category", 3);
+    ADD_ELEM("category", 3);
     ADD_ELEM2(last_features, convertor_x(target.x));
-   ADD_ELEM("target_x", convertor_x(target.x));
+    ADD_ELEM("target_x", convertor_x(target.x));
     ADD_ELEM2(last_features, convertor_y(target.y));
-   ADD_ELEM("target_y", convertor_y(target.y));
+    ADD_ELEM("target_y", convertor_y(target.y));
     ADD_ELEM2(last_features, wm.self().unum());
-   ADD_ELEM("unum", wm.self().unum());
+    ADD_ELEM("unum", wm.self().unum());
     ADD_ELEM2(last_features, find_unum_index(wm, wm.self().unum()));
-   ADD_ELEM("unum_index", find_unum_index(wm, wm.self().unum()));
+    ADD_ELEM("unum_index", find_unum_index(wm, wm.self().unum()));
     ADD_ELEM2(last_features, convertor_bv(ballsp));
-   ADD_ELEM("ball_speed", convertor_bv(ballsp));
+    ADD_ELEM("ball_speed", convertor_bv(ballsp));
     ADD_ELEM2(last_features, convertor_angle((target - wm.ball().pos()).th().degree()));
-   ADD_ELEM("ball_dir", convertor_angle((target - wm.ball().pos()).th().degree()));
+    ADD_ELEM("ball_dir", convertor_angle((target - wm.ball().pos()).th().degree()));
     ADD_ELEM2(last_features, 4);
-   ADD_ELEM("desc", 4);
+    ADD_ELEM("desc", 4);
     fout << std::endl;
 }
 void DataExtractor::extract_pass_angle(const AbstractPlayerObject *player, const WorldModel &wm, DataSide side)
@@ -1152,61 +1158,61 @@ void DataExtractor::extract_pass_angle(const AbstractPlayerObject *player, const
     if (option.openAnglePass == side || option.openAnglePass == BOTH)
     {
         ADD_ELEM2(last_features, convertor_dist(ball_pos.dist(tm_pos)));
-       ADD_ELEM("pass_dist", convertor_dist(ball_pos.dist(tm_pos)));
+        ADD_ELEM("pass_dist", convertor_dist(ball_pos.dist(tm_pos)));
         std::sort(opp_pass_angle_dist.begin(), opp_pass_angle_dist.end());
         std::sort(opp_pass_projection.begin(), opp_pass_projection.end());
         std::sort(opp_pass_projection_bodydiff.begin(), opp_pass_projection_bodydiff.end());
         if (opp_pass_angle_dist.size() >= 1)
         {
             ADD_ELEM2(last_features, convertor_dist(opp_pass_angle_dist[0].second));
-           ADD_ELEM("pass_opp1_dist", convertor_dist(opp_pass_angle_dist[0].second));
+            ADD_ELEM("pass_opp1_dist", convertor_dist(opp_pass_angle_dist[0].second));
             ADD_ELEM2(last_features, convertor_angle(opp_pass_angle_dist[0].first));
-           ADD_ELEM("pass_opp1_angle", convertor_angle(opp_pass_angle_dist[0].first));
+            ADD_ELEM("pass_opp1_angle", convertor_angle(opp_pass_angle_dist[0].first));
             ADD_ELEM2(last_features, convertor_dist(opp_pass_projection[0].first));
-           ADD_ELEM("pass_opp1_dist_line", convertor_dist(opp_pass_projection[0].first));
+            ADD_ELEM("pass_opp1_dist_line", convertor_dist(opp_pass_projection[0].first));
             ADD_ELEM2(last_features, convertor_dist(opp_pass_projection[0].second));
-           ADD_ELEM("pass_opp1_dist_proj", convertor_dist(opp_pass_projection[0].second));
+            ADD_ELEM("pass_opp1_dist_proj", convertor_dist(opp_pass_projection[0].second));
             ADD_ELEM2(last_features, convertor_angle(opp_pass_projection_bodydiff[0].second));
-           ADD_ELEM("pass_opp1_dist_diffbody", convertor_angle(opp_pass_projection_bodydiff[0].second));
+            ADD_ELEM("pass_opp1_dist_diffbody", convertor_angle(opp_pass_projection_bodydiff[0].second));
         }
         else
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp1_dist", invalid_data);
+            ADD_ELEM("pass_opp1_dist", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp1_angle", invalid_data);
+            ADD_ELEM("pass_opp1_angle", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp1_dist_line", invalid_data);
+            ADD_ELEM("pass_opp1_dist_line", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp1_dist_proj", invalid_data);
+            ADD_ELEM("pass_opp1_dist_proj", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp1_dist_diffbody", invalid_data);
+            ADD_ELEM("pass_opp1_dist_diffbody", invalid_data);
         }
         if (opp_pass_angle_dist.size() >= 2)
         {
             ADD_ELEM2(last_features, convertor_dist(opp_pass_angle_dist[1].second));
-           ADD_ELEM("pass_opp2_dist", convertor_dist(opp_pass_angle_dist[1].second));
+            ADD_ELEM("pass_opp2_dist", convertor_dist(opp_pass_angle_dist[1].second));
             ADD_ELEM2(last_features, convertor_angle(opp_pass_angle_dist[1].first));
-           ADD_ELEM("pass_opp2_angle", convertor_angle(opp_pass_angle_dist[1].first));
+            ADD_ELEM("pass_opp2_angle", convertor_angle(opp_pass_angle_dist[1].first));
             ADD_ELEM2(last_features, convertor_dist(opp_pass_projection[1].first));
-           ADD_ELEM("pass_opp2_dist_line", convertor_dist(opp_pass_projection[1].first));
+            ADD_ELEM("pass_opp2_dist_line", convertor_dist(opp_pass_projection[1].first));
             ADD_ELEM2(last_features, convertor_dist(opp_pass_projection[1].second));
-           ADD_ELEM("pass_opp2_dist_proj", convertor_dist(opp_pass_projection[1].second));
+            ADD_ELEM("pass_opp2_dist_proj", convertor_dist(opp_pass_projection[1].second));
             ADD_ELEM2(last_features, convertor_angle(opp_pass_projection_bodydiff[1].second));
-           ADD_ELEM("pass_opp2_dist_diffbody", convertor_angle(opp_pass_projection_bodydiff[1].second));
+            ADD_ELEM("pass_opp2_dist_diffbody", convertor_angle(opp_pass_projection_bodydiff[1].second));
         }
         else
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp2_dist", invalid_data);
+            ADD_ELEM("pass_opp2_dist", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp2_angle", invalid_data);
+            ADD_ELEM("pass_opp2_angle", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp2_dist_line", invalid_data);
+            ADD_ELEM("pass_opp2_dist_line", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp2_dist_proj", invalid_data);
+            ADD_ELEM("pass_opp2_dist_proj", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("pass_opp2_dist_diffbody", invalid_data);
+            ADD_ELEM("pass_opp2_dist_diffbody", invalid_data);
         }
     }
     if (option.nearestOppDist == side || option.nearestOppDist == BOTH)
@@ -1216,38 +1222,38 @@ void DataExtractor::extract_pass_angle(const AbstractPlayerObject *player, const
         if (opp_dist_angle.size() >= 1)
         {
             ADD_ELEM2(last_features, convertor_dist(opp_dist_angle[0].first));
-           ADD_ELEM("opp1_dist", convertor_dist(opp_dist_angle[0].first));
+            ADD_ELEM("opp1_dist", convertor_dist(opp_dist_angle[0].first));
             ADD_ELEM2(last_features, convertor_angle(opp_dist_angle[0].second));
-           ADD_ELEM("opp1_angle", convertor_angle(opp_dist_angle[0].second));
+            ADD_ELEM("opp1_angle", convertor_angle(opp_dist_angle[0].second));
             ADD_ELEM2(last_features, convertor_angle(opp_dist_body_diff[0].second));
-           ADD_ELEM("opp1_diffbody", convertor_angle(opp_dist_body_diff[0].second));
+            ADD_ELEM("opp1_diffbody", convertor_angle(opp_dist_body_diff[0].second));
         }
         else
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("opp1_dist", invalid_data);
+            ADD_ELEM("opp1_dist", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("opp1_angle", invalid_data);
+            ADD_ELEM("opp1_angle", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("opp1_diffbody", invalid_data);
+            ADD_ELEM("opp1_diffbody", invalid_data);
         }
         if (opp_dist_angle.size() >= 2)
         {
             ADD_ELEM2(last_features, convertor_dist(opp_dist_angle[1].first));
-           ADD_ELEM("opp2_dist", convertor_dist(opp_dist_angle[1].first));
+            ADD_ELEM("opp2_dist", convertor_dist(opp_dist_angle[1].first));
             ADD_ELEM2(last_features, convertor_angle(opp_dist_angle[1].second));
-           ADD_ELEM("opp2_angle", convertor_angle(opp_dist_angle[1].second));
+            ADD_ELEM("opp2_angle", convertor_angle(opp_dist_angle[1].second));
             ADD_ELEM2(last_features, convertor_angle(opp_dist_body_diff[1].second));
-           ADD_ELEM("opp2_diffbody", convertor_angle(opp_dist_body_diff[1].second));
+            ADD_ELEM("opp2_diffbody", convertor_angle(opp_dist_body_diff[1].second));
         }
         else
         {
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("opp2_dist", invalid_data);
+            ADD_ELEM("opp2_dist", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("opp2_angle", invalid_data);
+            ADD_ELEM("opp2_angle", invalid_data);
             ADD_ELEM2(last_features, invalid_data);
-           ADD_ELEM("opp2_diffbody", invalid_data);
+            ADD_ELEM("opp2_diffbody", invalid_data);
         }
     }
 }
@@ -1257,16 +1263,16 @@ void DataExtractor::extract_vel(const AbstractPlayerObject *player, DataSide sid
     if (option.vel == side || option.vel == BOTH)
     {
         ADD_ELEM2(last_features, convertor_pvx(player->vel().x));
-       ADD_ELEM("v_x", convertor_pvx(player->vel().x));
+        ADD_ELEM("v_x", convertor_pvx(player->vel().x));
         ADD_ELEM2(last_features, convertor_pvy(player->vel().y));
-       ADD_ELEM("v_y", convertor_pvy(player->vel().y));
+        ADD_ELEM("v_y", convertor_pvy(player->vel().y));
     }
     if (option.polarVel == side || option.polarVel == BOTH)
     {
         ADD_ELEM2(last_features, convertor_pv(player->vel().r()));
-       ADD_ELEM("v_r", convertor_pv(player->vel().r()));
+        ADD_ELEM("v_r", convertor_pv(player->vel().r()));
         ADD_ELEM2(last_features, convertor_angle(player->vel().th().degree()));
-       ADD_ELEM("v_t", convertor_angle(player->vel().th().degree()));
+        ADD_ELEM("v_t", convertor_angle(player->vel().th().degree()));
     }
 }
 
@@ -1275,28 +1281,28 @@ void DataExtractor::extract_pos(const AbstractPlayerObject *player, const WorldM
     if (option.pos == side || option.pos == BOTH)
     {
         ADD_ELEM2(last_features, convertor_x(player->pos().x));
-       ADD_ELEM("pos_x", convertor_x(player->pos().x));
+        ADD_ELEM("pos_x", convertor_x(player->pos().x));
         ADD_ELEM2(last_features, convertor_y(player->pos().y));
-       ADD_ELEM("pos_y", convertor_y(player->pos().y));
+        ADD_ELEM("pos_y", convertor_y(player->pos().y));
     }
     if (option.polarPos == side || option.polarPos == BOTH)
     {
         ADD_ELEM2(last_features, convertor_dist(player->pos().r()));
-       ADD_ELEM("pos_r", convertor_dist(player->pos().r()));
+        ADD_ELEM("pos_r", convertor_dist(player->pos().r()));
         ADD_ELEM2(last_features, convertor_angle(player->pos().th().degree()));
-       ADD_ELEM("pos_t", convertor_angle(player->pos().th().degree()));
+        ADD_ELEM("pos_t", convertor_angle(player->pos().th().degree()));
     }
     Vector2D rpos = player->pos() - wm.self().pos();
     if (option.relativePos == side || option.relativePos == BOTH)
     {
         ADD_ELEM2(last_features, convertor_dist_x(rpos.x));
-       ADD_ELEM("kicker_x", convertor_dist_x(rpos.x));
+        ADD_ELEM("kicker_x", convertor_dist_x(rpos.x));
         ADD_ELEM2(last_features, convertor_dist_y(rpos.y));
-       ADD_ELEM("kicker_y", convertor_dist_y(rpos.y));
+        ADD_ELEM("kicker_y", convertor_dist_y(rpos.y));
         ADD_ELEM2(last_features, convertor_dist(rpos.r()));
-       ADD_ELEM("kicker_r", convertor_dist(rpos.r()));
+        ADD_ELEM("kicker_r", convertor_dist(rpos.r()));
         ADD_ELEM2(last_features, convertor_angle(rpos.th().degree()));
-       ADD_ELEM("kicker_t", convertor_angle(rpos.th().degree()));
+        ADD_ELEM("kicker_t", convertor_angle(rpos.th().degree()));
     }
 
     if (option.in_offside == side || option.in_offside == BOTH)
@@ -1304,12 +1310,12 @@ void DataExtractor::extract_pos(const AbstractPlayerObject *player, const WorldM
         if (player->pos().x > wm.offsideLineX())
         {
             ADD_ELEM2(last_features, 1);
-           ADD_ELEM("pos_offside", 1);
+            ADD_ELEM("pos_offside", 1);
         }
         else
         {
             ADD_ELEM2(last_features, 0);
-           ADD_ELEM("pos_offside", 0);
+            ADD_ELEM("pos_offside", 0);
         }
     }
 }
@@ -1320,9 +1326,9 @@ void DataExtractor::extract_goal_polar(const AbstractPlayerObject *player, DataS
         return;
     Vector2D goal_center = Vector2D(52, 0);
     ADD_ELEM2(last_features, convertor_dist((goal_center - player->pos()).r()));
-   ADD_ELEM("angle_goal_center_r", convertor_dist((goal_center - player->pos()).r()));
+    ADD_ELEM("angle_goal_center_r", convertor_dist((goal_center - player->pos()).r()));
     ADD_ELEM2(last_features, convertor_angle((goal_center - player->pos()).th().degree()));
-   ADD_ELEM("angle_goal_center_t", convertor_angle((goal_center - player->pos()).th().degree()));
+    ADD_ELEM("angle_goal_center_t", convertor_angle((goal_center - player->pos()).th().degree()));
 }
 
 void DataExtractor::extract_goal_open_angle(const rcsc::AbstractPlayerObject *player,
@@ -1365,38 +1371,45 @@ void DataExtractor::extract_goal_open_angle(const rcsc::AbstractPlayerObject *pl
     }
 
     ADD_ELEM2(last_features, convertor_angle(max_open_angle));
-   ADD_ELEM("goal_open_angle", convertor_angle(max_open_angle));
+    ADD_ELEM("goal_open_angle", convertor_angle(max_open_angle));
 }
 
 void DataExtractor::extract_base_data(const rcsc::AbstractPlayerObject *player, DataSide side)
 {
-    if (option.side == side || option.side == BOTH) {
+    if (option.side == side || option.side == BOTH)
+    {
         ADD_ELEM2(last_features, player->side());
         ADD_ELEM("side", player->side());
     }
-    if (option.unum == side || option.unum == BOTH) {
+    if (option.unum == side || option.unum == BOTH)
+    {
         ADD_ELEM2(last_features, convertor_unum(player->unum()));
         ADD_ELEM("unum", convertor_unum(player->unum()));
     }
     if (option.type == side || option.type == BOTH)
         extract_type(player, side);
-    if (option.body == side || option.body == BOTH) {
+    if (option.body == side || option.body == BOTH)
+    {
         ADD_ELEM2(last_features, convertor_angle(player->body().degree()));
         ADD_ELEM("body", convertor_angle(player->body().degree()));
     }
-    if (option.face == side || option.face == BOTH) {
+    if (option.face == side || option.face == BOTH)
+    {
         ADD_ELEM2(last_features, convertor_angle(player->face().degree()));
         ADD_ELEM("face", convertor_angle(player->face().degree()));
     }
-    if (option.tackling == side || option.tackling == BOTH) {
-        ADD_ELEM2(last_features, player->isTackling()); 
-        ADD_ELEM("tackling", player->isTackling()); 
+    if (option.tackling == side || option.tackling == BOTH)
+    {
+        ADD_ELEM2(last_features, player->isTackling());
+        ADD_ELEM("tackling", player->isTackling());
     }
-    if (option.kicking == side || option.kicking == BOTH) {
+    if (option.kicking == side || option.kicking == BOTH)
+    {
         ADD_ELEM2(last_features, player->isKicking());
         ADD_ELEM("kicking", player->isKicking());
     }
-    if (option.card == side || option.card == BOTH) {
+    if (option.card == side || option.card == BOTH)
+    {
         ADD_ELEM("card", convertor_card(player->card()));
     }
 }
@@ -1404,23 +1417,23 @@ void DataExtractor::extract_base_data(const rcsc::AbstractPlayerObject *player, 
 void DataExtractor::extract_type(const AbstractPlayerObject *player, DataSide side)
 {
     ADD_ELEM2(last_features, player->playerTypePtr()->dashPowerRate());
-   ADD_ELEM("player_type_dash_rate", player->playerTypePtr()->dashPowerRate());
+    ADD_ELEM("player_type_dash_rate", player->playerTypePtr()->dashPowerRate());
     ADD_ELEM2(last_features, player->playerTypePtr()->effortMax());
-   ADD_ELEM("player_type_effort_max", player->playerTypePtr()->effortMax());
+    ADD_ELEM("player_type_effort_max", player->playerTypePtr()->effortMax());
     ADD_ELEM2(last_features, player->playerTypePtr()->effortMin());
-   ADD_ELEM("player_type_effort_min", player->playerTypePtr()->effortMin());
+    ADD_ELEM("player_type_effort_min", player->playerTypePtr()->effortMin());
     ADD_ELEM2(last_features, player->playerTypePtr()->kickableArea());
-   ADD_ELEM("player_type_kickable", player->playerTypePtr()->kickableArea());
+    ADD_ELEM("player_type_kickable", player->playerTypePtr()->kickableArea());
     ADD_ELEM2(last_features, player->playerTypePtr()->kickableMargin());
-   ADD_ELEM("player_type_margin", player->playerTypePtr()->kickableMargin());
+    ADD_ELEM("player_type_margin", player->playerTypePtr()->kickableMargin());
     ADD_ELEM2(last_features, player->playerTypePtr()->kickPowerRate());
-   ADD_ELEM("player_type_kick_power", player->playerTypePtr()->kickPowerRate());
+    ADD_ELEM("player_type_kick_power", player->playerTypePtr()->kickPowerRate());
     ADD_ELEM2(last_features, player->playerTypePtr()->playerDecay());
-   ADD_ELEM("player_type_decay", player->playerTypePtr()->playerDecay());
+    ADD_ELEM("player_type_decay", player->playerTypePtr()->playerDecay());
     ADD_ELEM2(last_features, player->playerTypePtr()->playerSize());
-   ADD_ELEM("player_type_size", player->playerTypePtr()->playerSize());
+    ADD_ELEM("player_type_size", player->playerTypePtr()->playerSize());
     ADD_ELEM2(last_features, player->playerTypePtr()->realSpeedMax());
-   ADD_ELEM("player_type_speed_max", player->playerTypePtr()->realSpeedMax());
+    ADD_ELEM("player_type_speed_max", player->playerTypePtr()->realSpeedMax());
 }
 
 void DataExtractor::extract_counts(const rcsc::AbstractPlayerObject *player, DataSide side)
@@ -1429,11 +1442,11 @@ void DataExtractor::extract_counts(const rcsc::AbstractPlayerObject *player, Dat
         return;
 
     ADD_ELEM2(last_features, convertor_counts(player->posCount()));
-   ADD_ELEM("pos_count", convertor_counts(player->posCount()));
+    ADD_ELEM("pos_count", convertor_counts(player->posCount()));
     ADD_ELEM2(last_features, convertor_counts(player->velCount()));
-   ADD_ELEM("vel_count", convertor_counts(player->velCount()));
+    ADD_ELEM("vel_count", convertor_counts(player->velCount()));
     ADD_ELEM2(last_features, convertor_counts(player->bodyCount()));
-   ADD_ELEM("body_count", convertor_counts(player->bodyCount()));
+    ADD_ELEM("body_count", convertor_counts(player->bodyCount()));
 }
 
 void DataExtractor::extract_history(const rcsc::AbstractPlayerObject *player, DataSide side)
@@ -1449,12 +1462,12 @@ void DataExtractor::extract_history(const rcsc::AbstractPlayerObject *player, Da
             if (DataExtractor::history_body_count[unum][len - 2 - i] == -1)
             {
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_body', invalid_data);
+                ADD_ELEM('history_body', invalid_data);
             }
             else
             {
                 ADD_ELEM2(last_features, convertor_angle(DataExtractor::history_body[unum][len - 2 - i].degree()));
-               ADD_ELEM('history_body', convertor_angle(DataExtractor::history_body[unum][len - 2 - i].degree()));
+                ADD_ELEM('history_body', convertor_angle(DataExtractor::history_body[unum][len - 2 - i].degree()));
             }
         }
         if (option.pos == side || option.pos == BOTH)
@@ -1462,16 +1475,16 @@ void DataExtractor::extract_history(const rcsc::AbstractPlayerObject *player, Da
             if (DataExtractor::history_pos_count[unum][len - 2 - i] == -1)
             {
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_pos_x', invalid_data);
+                ADD_ELEM('history_pos_x', invalid_data);
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_pos_y', invalid_data);
+                ADD_ELEM('history_pos_y', invalid_data);
             }
             else
             {
                 ADD_ELEM2(last_features, convertor_x(DataExtractor::history_pos[unum][len - 2 - i].x));
-               ADD_ELEM('history_pos_x', convertor_x(DataExtractor::history_pos[unum][len - 2 - i].x));
+                ADD_ELEM('history_pos_x', convertor_x(DataExtractor::history_pos[unum][len - 2 - i].x));
                 ADD_ELEM2(last_features, convertor_y(DataExtractor::history_pos[unum][len - 2 - i].y));
-               ADD_ELEM('history_pos_y', convertor_y(DataExtractor::history_pos[unum][len - 2 - i].y));
+                ADD_ELEM('history_pos_y', convertor_y(DataExtractor::history_pos[unum][len - 2 - i].y));
             }
         }
         if (option.polarPos == side || option.polarPos == BOTH)
@@ -1479,16 +1492,16 @@ void DataExtractor::extract_history(const rcsc::AbstractPlayerObject *player, Da
             if (DataExtractor::history_pos_count[unum][len - 2 - i] == -1)
             {
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_pos_r', invalid_data);
+                ADD_ELEM('history_pos_r', invalid_data);
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_pos_t', invalid_data);
+                ADD_ELEM('history_pos_t', invalid_data);
             }
             else
             {
                 ADD_ELEM2(last_features, convertor_dist(DataExtractor::history_pos[unum][len - 2 - i].r()));
-               ADD_ELEM('history_pos_r', convertor_dist(DataExtractor::history_pos[unum][len - 2 - i].r()));
+                ADD_ELEM('history_pos_r', convertor_dist(DataExtractor::history_pos[unum][len - 2 - i].r()));
                 ADD_ELEM2(last_features, convertor_angle(DataExtractor::history_pos[unum][len - 2 - i].th().degree()));
-               ADD_ELEM('history_pos_t', convertor_angle(DataExtractor::history_pos[unum][len - 2 - i].th().degree()));
+                ADD_ELEM('history_pos_t', convertor_angle(DataExtractor::history_pos[unum][len - 2 - i].th().degree()));
             }
         }
         if (option.vel == side || option.vel == BOTH)
@@ -1496,16 +1509,16 @@ void DataExtractor::extract_history(const rcsc::AbstractPlayerObject *player, Da
             if (DataExtractor::history_vel_count[unum][len - 2 - i] == -1)
             {
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_vel_x', invalid_data);
+                ADD_ELEM('history_vel_x', invalid_data);
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_vel_y', invalid_data);
+                ADD_ELEM('history_vel_y', invalid_data);
             }
             else
             {
                 ADD_ELEM2(last_features, convertor_pvx(DataExtractor::history_vel[unum][len - 2 - i].x));
-               ADD_ELEM('history_vel_x', convertor_pvx(DataExtractor::history_vel[unum][len - 2 - i].x));
+                ADD_ELEM('history_vel_x', convertor_pvx(DataExtractor::history_vel[unum][len - 2 - i].x));
                 ADD_ELEM2(last_features, convertor_pvy(DataExtractor::history_vel[unum][len - 2 - i].y));
-               ADD_ELEM('history_vel_y', convertor_pvy(DataExtractor::history_vel[unum][len - 2 - i].y));
+                ADD_ELEM('history_vel_y', convertor_pvy(DataExtractor::history_vel[unum][len - 2 - i].y));
             }
         }
         if (option.polarVel == side || option.polarVel == BOTH)
@@ -1513,26 +1526,26 @@ void DataExtractor::extract_history(const rcsc::AbstractPlayerObject *player, Da
             if (DataExtractor::history_vel_count[unum][len - 2 - i] == -1)
             {
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_vel_r', invalid_data);
+                ADD_ELEM('history_vel_r', invalid_data);
                 ADD_ELEM2(last_features, invalid_data);
-               ADD_ELEM('history_vel_t', invalid_data);
+                ADD_ELEM('history_vel_t', invalid_data);
             }
             else
             {
                 ADD_ELEM2(last_features, convertor_pv(DataExtractor::history_vel[unum][len - 2 - i].r()));
-               ADD_ELEM('history_vel_r', convertor_pv(DataExtractor::history_vel[unum][len - 2 - i].r()));
+                ADD_ELEM('history_vel_r', convertor_pv(DataExtractor::history_vel[unum][len - 2 - i].r()));
                 ADD_ELEM2(last_features, convertor_angle(DataExtractor::history_vel[unum][len - 2 - i].th().degree()));
-               ADD_ELEM('history_vel_t', convertor_angle(DataExtractor::history_vel[unum][len - 2 - i].th().degree()));
+                ADD_ELEM('history_vel_t', convertor_angle(DataExtractor::history_vel[unum][len - 2 - i].th().degree()));
             }
         }
         if (option.counts == side || option.counts == BOTH)
         {
             ADD_ELEM2(last_features, convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
-           ADD_ELEM('history_pos_count', convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
+            ADD_ELEM('history_pos_count', convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
             ADD_ELEM2(last_features, convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
-           ADD_ELEM('history_vel_count', convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
+            ADD_ELEM('history_vel_count', convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
             ADD_ELEM2(last_features, convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
-           ADD_ELEM('history_body_count', convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
+            ADD_ELEM('history_body_count', convertor_counts(DataExtractor::history_pos_count[unum][len - 2 - i]));
         }
     }
 }
@@ -1546,7 +1559,8 @@ void DataExtractor::extract_drible_angles(const WorldModel &wm)
     const AbstractPlayerObject *kicker = wm.ourPlayer(wm.self().unum());
     if (kicker == NULL || kicker->unum() < 0)
     {
-        for (int i = 1; i <= option.nDribleAngle; i++) {
+        for (int i = 1; i <= option.nDribleAngle; i++)
+        {
             ADD_ELEM2(last_features, -2);
             ADD_ELEM("dribble_angle", -2);
         }

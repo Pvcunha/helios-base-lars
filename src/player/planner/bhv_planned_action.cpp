@@ -308,11 +308,6 @@ Bhv_PlannedAction::execute( PlayerAgent * agent )
     case CooperativeAction::Pass:
         {
 
-            std::vector<float> features = DataExtractor::i().get_last_features(agent, first_action, false); 
-            // TODO: é preciso verificar quais features foram retiradas no treinamento do modelo e retira-las do vetor
-            features.pop_back();
-            features.pop_back();
-
             dlog.addText( Logger::TEAM,
                           __FILE__" (Bhv_PlannedAction) pass" );
             Bhv_PassKickFindReceiver( M_chain_graph ).execute( agent );

@@ -41,6 +41,8 @@
 
 #include "neck_turn_to_receiver.h"
 
+#include "data_extractor/DataExtractor.h"
+
 #include "learning_models/target_point_gen.h"
 #include "pass.h"
 
@@ -340,15 +342,6 @@ Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
                       pass.category() );
         return false;
     }
-
-    // TODO: trocar passe por um passe do modelo
-    /* 
-        1. Importar o modelo ONNX
-        2. Gerar um passe a partir do modelo
-        3. criar um objeto CooperativeAction a partir do dado gerado
-        4. substituir por pass
-    */
-
      
     const AbstractPlayerObject * receiver = wm.ourPlayer( pass.targetPlayerUnum() );
 
@@ -432,14 +425,24 @@ Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
     //
     // pass kick
     //
-    auto state = M_chain_graph.getFirstState();
-    const AbstractPlayerObject *holder = state.ballHolder();
+#ifdef LOG_INFERENCE_ENABLED
 
+    const vector<float> bps_row = DataExtractor::i().get_last_features(agent, pass, false); 
+    const vector<float> raw_wm = LogWorldModelVector(wm);
     std::cout << "Infering target point..." << std::endl;
     std::vector<float> infered_target_point = LearningModels::TargetPointGenerator::instance().getOuput();
     Vector2D inf_target_point = Vector2D(infered_target_point[0], infered_target_point[1]);
     std::cout << "Successifully infered target point" << std::endl;
-    const int kick_stepp = 2; 
+#else
+    std::cout << "Infering target point..." << std::endl;
+    std::vector<float> infered_target_point = LearningModels::TargetPointGenerator::instance().getOuput();
+    Vector2D inf_target_point = Vector2D(infered_target_point[0], infered_target_point[1]);
+    std::cout << "Successifully infered target point" << std::endl;
+#endif
+    auto state = M_chain_graph.getFirstState();
+    const AbstractPlayerObject *holder = state.ballHolder();
+
+   const int kick_stepp = 2; 
 
     const double dist = ( inf_target_point - holder->pos() ).r();
 

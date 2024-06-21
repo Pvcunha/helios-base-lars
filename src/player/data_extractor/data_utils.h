@@ -90,3 +90,63 @@ std::string LogWorldModel(const rcsc::WorldModel &wm)
 
     return state;
 }
+
+std::vector<float> LogWorldModelVector(const rcsc::WorldModel &wm) {
+    std::vector<float> state;
+    const rcsc::ServerParam &SP = rcsc::ServerParam::i();
+
+    state.push_back(wm.time().cycle());
+    state.push_back(wm.self().unum());
+    state.push_back(wm.ball().pos().x);
+    state.push_back(wm.ball().pos().y);
+    state.push_back(wm.ball().vel().x);
+    state.push_back(wm.ball().vel().y);
+
+    std::vector<rcsc::PlayerObject::Cont> players_pointers = {wm.opponentsFromSelf(),
+                                                              wm.teammatesFromSelf()};
+
+    for (auto &player_pointer : players_pointers)
+    {
+        rcsc::Vector2D saw_pos[11];
+        rcsc::Vector2D saw_vel[11];
+        rcsc::AngleDeg saw_angle[11];
+
+        bool valid_pos[11] = {false, false, false, false, false, false, false, false, false, false, false};
+        // add opponents
+
+        for (auto &player : player_pointer)
+        {
+            if(player == nullptr || player == NULL) continue;
+            if(player->posCount() >= 4) continue;
+
+            saw_vel[player->unum()-1] = player->vel(); 
+            saw_pos[player->unum()-1] = player->pos();
+            saw_angle[player->unum()-1] = player->body();
+            valid_pos[player->unum()-1] = true;
+        }
+
+        for (int i = 0; i < 11; i++)
+        {
+            if (valid_pos[i])
+            {
+                state.push_back(i+1);
+                state.push_back(saw_pos[i].x);
+                state.push_back(saw_pos[i].y);
+                state.push_back(saw_vel[i].x);
+                state.push_back(saw_vel[i].y);
+                state.push_back(saw_angle[i].radian());
+            }
+            else
+            {
+                state.push_back(i+1);
+                state.push_back(SP.pitchLength());
+                state.push_back(SP.pitchWidth());
+                state.push_back(0.0);
+                state.push_back(0.0);
+                state.push_back(0.0);
+            }
+        }
+    }
+
+    return state;
+}
