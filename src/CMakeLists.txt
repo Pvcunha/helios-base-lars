@@ -43,7 +43,13 @@ file(COPY
   DESTINATION ${PROJECT_BINARY_DIR}/bin
   )
 
-file(COPY
-  ${PROJECT_SOURCE_DIR}/models/bps_model.onnx ${PROJECT_SOURCE_DIR}/models/tpg_fset1.onnx ${PROJECT_SOURCE_DIR}/models/tpg_positional.onnx
-  DESTINATION ${PROJECT_BINARY_DIR}/bin/models
-)
+# iterate over the models directory and copy all the files to the binary directory
+
+file(GLOB MODEL_FILES ${PROJECT_SOURCE_DIR}/models/*.onnx)
+
+foreach(file_path ${MODEL_FILES})
+  file(
+    COPY ${file_path} 
+    DESTINATION ${PROJECT_BINARY_DIR}/bin/models
+  )
+endforeach()
