@@ -14,7 +14,7 @@ LearningModels::OnnxModel::OnnxModel(const char *modelPath, Ort::Env *env, int n
     this->numInputNodes = session->GetInputCount();
     this->inputNodeNames = std::vector<char *>(this->numInputNodes);
 
-    for (int i = 0; i < numInputNodes; i++)
+    for (size_t i = 0; i < numInputNodes; i++)
     {
         char *input_name = session->GetInputName(i, allocator);
         this->inputNodeNames[i] = input_name;

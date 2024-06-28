@@ -62,7 +62,7 @@ class OnnxModel
 
         // Get our model output
         std::vector<const char *> output_node_names;
-        for (int i = 0; i < this->session->GetOutputCount(); i++)
+        for (size_t i = 0; i < this->session->GetOutputCount(); i++)
         {
             output_node_names.push_back(this->session->GetOutputName(i, allocator));
         }
@@ -71,7 +71,7 @@ class OnnxModel
             Ort::RunOptions().UnsetTerminate(), 
             this->inputNodeNames.data(), 
             input_tensors.data(), 
-            3, 
+            input_tensors.size(), 
             output_node_names.data(), 
             1
         );

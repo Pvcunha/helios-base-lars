@@ -71,7 +71,7 @@ class OnnxModel
             Ort::RunOptions().UnsetTerminate(), 
             this->inputNodeNames.data(), 
             input_tensors.data(), 
-            3, 
+            2, 
             output_node_names.data(), 
             1
         );

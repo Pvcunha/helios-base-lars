@@ -11,20 +11,16 @@ class OnnxTest : LearningModels::OnnxModel
     public:
         OnnxTest(const char *modelPath, Ort::Env *env, int numberofThreads) 
         : LearningModels::OnnxModel(modelPath, env){};
-        float getOuput(){
+        float *getOuput(){
             std::vector<std::vector<float>> frame = this->createFrame();
             float *result = this->forward<float>(frame);
-            
-            return result[1];
+
+            return result;
         };
 
     private:
         std::vector<std::vector<float>> createFrame()
         {
-            const int framesize = 167;
-            float frame[framesize] = {0};
-            auto x = std::vector<float>(frame, frame + framesize);
- 
             const int framesize2 = 138;
             float frame2[framesize2] = {0};
             auto y = std::vector<float>(frame2, frame2 + framesize2);
@@ -33,7 +29,7 @@ class OnnxTest : LearningModels::OnnxModel
             float frame3[framesize3] = {0};
             auto z = std::vector<float>(frame3, frame3 + framesize3);
         
-            return std::vector<std::vector<float>>{x, y, z};
+            return std::vector<std::vector<float>>{y, z};
         }
 };
 
@@ -58,13 +54,13 @@ std::vector<double>* evaluateTime(std::string modelPath)
     timeArray->push_back(timeTaken);
 
     start = clock();
-    float output = net.getOuput();
+    float *output = net.getOuput();
     end = clock();
     timeTaken = double(end - start) / double(CLOCKS_PER_SEC);
     std::cout << "model inf time " << timeTaken << std::endl;
     timeArray->push_back(timeTaken);
 
-    std::cout << output << std::endl;
+    std::cout << output[0] << " " << output[1] << std::endl;
 
     delete onnxEnv;
 
@@ -72,10 +68,16 @@ std::vector<double>* evaluateTime(std::string modelPath)
 }
 
 int main() {
-    std::string modelPath = "../../models/tpg_fset1.onnx";
-    std::vector<std::vector<double>*> timeArrays;
+    // iterate over files in a directory
+    for (const auto & entry : fs::directory_iterator("../../models")) {
+       const std::string modelPath = entry.path();
+       evaluateTime(modelPath);
+    }
 
-    evaluateTime(modelPath);
+    // std::string modelPath = "../../models/fset1.onnx";
+    // std::vector<std::vector<double>*> timeArrays;
+
+    // evaluateTime(modelPath);
     //write to file
     // writeToFile(timeArrays);
 }

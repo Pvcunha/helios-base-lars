@@ -72,6 +72,7 @@
 #include <cmath>
 
 // #define DEBUG_PRINT
+#define LOG_INFERENCE_ENABLED
 
 using namespace rcsc;
 
@@ -308,12 +309,69 @@ int get_target_unum( Vector2D target_point, const WorldModel & wm )
 /*-------------------------------------------------------------------*/
 /*-------------------------------------------------------------------*/
 /*-------------------------------------------------------------------*/
+std::vector<float> logWorldModelVector(const rcsc::WorldModel &wm) {
+    std::vector<float> state;
+    const rcsc::ServerParam &SP = rcsc::ServerParam::i();
 
+    state.push_back(wm.time().cycle());
+    state.push_back(wm.self().unum());
+    state.push_back(wm.ball().pos().x);
+    state.push_back(wm.ball().pos().y);
+    state.push_back(wm.ball().vel().x);
+    state.push_back(wm.ball().vel().y);
+
+    std::vector<rcsc::PlayerObject::Cont> players_pointers = {wm.opponentsFromSelf(),
+                                                              wm.teammatesFromSelf()};
+
+    for (auto &player_pointer : players_pointers)
+    {
+        rcsc::Vector2D saw_pos[11];
+        rcsc::Vector2D saw_vel[11];
+        rcsc::AngleDeg saw_angle[11];
+
+        bool valid_pos[11] = {false, false, false, false, false, false, false, false, false, false, false};
+        // add opponents
+
+        for (auto &player : player_pointer)
+        {
+            if(player == nullptr || player == NULL) continue;
+            if(player->posCount() >= 4) continue;
+
+            saw_vel[player->unum()-1] = player->vel(); 
+            saw_pos[player->unum()-1] = player->pos();
+            saw_angle[player->unum()-1] = player->body();
+            valid_pos[player->unum()-1] = true;
+        }
+
+        for (int i = 0; i < 11; i++)
+        {
+            if (valid_pos[i])
+            {
+                state.push_back(i+1);
+                state.push_back(saw_pos[i].x);
+                state.push_back(saw_pos[i].y);
+                state.push_back(saw_vel[i].x);
+                state.push_back(saw_vel[i].y);
+                state.push_back(saw_angle[i].radian());
+            }
+            else
+            {
+                state.push_back(i+1);
+                state.push_back(SP.pitchLength());
+                state.push_back(SP.pitchWidth());
+                state.push_back(0.0);
+                state.push_back(0.0);
+                state.push_back(0.0);
+            }
+        }
+    }
+
+    return state;
+}
 
 /*-------------------------------------------------------------------*/
 /*!
-
- */
+*/
 bool
 Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
 {
@@ -427,10 +485,11 @@ Bhv_PassKickFindReceiver::execute( PlayerAgent * agent )
     //
 #ifdef LOG_INFERENCE_ENABLED
 
-    const vector<float> bps_row = DataExtractor::i().get_last_features(agent, pass, false); 
-    const vector<float> raw_wm = LogWorldModelVector(wm);
+    const std::vector<float> bps_row = DataExtractor::i().get_last_features(agent, pass, false); 
+    const std::vector<float> raw_wm = logWorldModelVector(wm);
+     
     std::cout << "Infering target point..." << std::endl;
-    std::vector<float> infered_target_point = LearningModels::TargetPointGenerator::instance().getOuput();
+    std::vector<float> infered_target_point = LearningModels::TargetPointGenerator::instance().getOuput(raw_wm, bps_row);
     Vector2D inf_target_point = Vector2D(infered_target_point[0], infered_target_point[1]);
     std::cout << "Successifully infered target point" << std::endl;
 #else
